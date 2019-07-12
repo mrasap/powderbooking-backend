@@ -1,2 +1,2 @@
-# powderbooking_backend
+# powderbooking-backend
 RESTful API backend for the Powderbooking application
