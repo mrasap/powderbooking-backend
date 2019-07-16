@@ -12,12 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-from flask import Flask
-from apis import api
+from powderbooking.database import DatabaseHandler
+from config import build_database_url
 
-app = Flask(__name__)
-api.init_app(app)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+db = DatabaseHandler(database_url=build_database_url())

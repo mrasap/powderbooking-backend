@@ -12,12 +12,4 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-from flask import Flask
-from apis import api
 
-app = Flask(__name__)
-api.init_app(app)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
