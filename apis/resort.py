@@ -26,15 +26,6 @@ resort = convert_sqlalchemy_to_restplus_model(table=model_resort(metadata=MetaDa
 api.add_model(name=resort.name, definition=resort)
 
 
-@api.route('/')
-class ResortList(Resource):
-    @api.doc('list_resorts')
-    @api.marshal_list_with(resort)
-    def get(self):
-        """List all resorts"""
-        return db.execute(db.get_table('resort').select()).fetchall()
-
-
 @api.route('/<int:id>')
 @api.param('id', 'The overview identifier')
 @api.response(404, 'Resort not found')

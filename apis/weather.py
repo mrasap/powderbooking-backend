@@ -40,15 +40,6 @@ weather = convert_sqlalchemy_to_restplus_model(table=model_weather(metadata=Meta
 api.add_model(name=weather.name, definition=weather)
 
 
-@api.route('/')
-class WeatherList(Resource):
-    @api.doc('list_resorts')
-    @api.marshal_list_with(weather)
-    def get(self):
-        """List all weather reports"""
-        return db.execute(db.get_table('weather').select()).fetchall()
-
-
 @api.route('/<int:resort_id>')
 @api.param('resort_id', 'The overview identifier')
 @api.response(404, 'No weather report for given overview identifier found')
