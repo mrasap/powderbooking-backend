@@ -15,6 +15,8 @@
 
 from enum import Enum
 
+from sqlalchemy import text
+
 
 class Query(Enum):
     """
@@ -23,13 +25,11 @@ class Query(Enum):
     source to execute raw sql with sqlalchemy:
     https://chartio.com/resources/tutorials/how-to-execute-raw-sql-in-sqlalchemy/
     """
-    select_forecast_24h = f"""
-        SELECT r.id, lat, lng
-        FROM resort as r
-        LEFT JOIN (SELECT id, resort_id
-                   FROM forecast
-                   WHERE date = current_date
-                   and timepoint = 0
-                   ) as f on r.id = f.resort_id
-        WHERE f.id is NULL
-    """
+    select_weather_recent = text("""
+        SELECT *
+        FROM weather
+        WHERE weather.resort_id = :resort_id 
+            AND NOW() - dt < INTERVAL '1 day'
+        ORDER BY dt DESC
+        LIMIT 1
+    """)

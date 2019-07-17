@@ -1,6 +1,7 @@
 from flask_restplus import Api
 
 from .resort import api as resort
+from .weather import api as weather
 
 api = Api(
     title='Powderbooking',
@@ -10,3 +11,4 @@ api = Api(
 )
 
 api.add_namespace(resort)
+api.add_namespace(weather)

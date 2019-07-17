@@ -19,6 +19,8 @@ map_sqlalchemy_to_restplus_type = {
     'FLOAT': fields.Float,
     'INTEGER': fields.Integer,
     'VARCHAR': fields.String,
+    'DATETIME': fields.DateTime,
+    'DATE': fields.Date,
 }
 
 
