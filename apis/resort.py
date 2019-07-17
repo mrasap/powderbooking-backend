@@ -35,14 +35,14 @@ class ResortList(Resource):
         return db.execute(db.get_table('resort').select()).fetchall()
 
 
-@api.route('/<id>')
-@api.param('id', 'The resort identifier')
+@api.route('/<int:id>')
+@api.param('id', 'The overview identifier')
 @api.response(404, 'Resort not found')
 class Resort(Resource):
     @api.doc('get_resort')
     @api.marshal_with(resort)
-    def get(self, id):
-        """Get resort details given its identifier"""
+    def get(self, id: int):
+        """Get overview details given its identifier"""
         result = db.execute(db.get_table('resort').select().where(db.get_table_column('resort', 'id') == id))
 
         if result.rowcount == 1:

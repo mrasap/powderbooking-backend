@@ -13,30 +13,57 @@
 #  limitations under the License.
 #
 from flask_restplus import fields, Model
-from sqlalchemy import Table, Column, Integer, String, Float, Sequence, MetaData
+from sqlalchemy import Table, Column, Integer, String, Float, MetaData
 
-from utils.convert_models import convert_sqlalchemy_to_restplus_model
+from utils.convert_models import convert_sqlalchemy_to_restplus_model, filter_restplus_columns
 
 
 def test_convert_sqlalchemy_to_restplus_model():
-    table: Table = Table('resort', MetaData(),
+    table: Table = Table('overview', MetaData(),
                          Column('id', Integer, primary_key=True,
-                                comment='The identifier of the resort'),
-                         Column('continent', String, comment='The continent where the resort is located'),
-                         Column('lat', Float, comment='The latitudinal coordinate of the geolocation of the resort'),
-                         Column('altitude_min_m', Integer, comment='The lowest altitude of the resort (in metres)'),
+                                comment='The identifier of the overview'),
+                         Column('continent', String, comment='The continent where the overview is located'),
+                         Column('lat', Float, comment='The latitudinal coordinate of the geolocation of the overview'),
+                         Column('altitude_min_m', Integer, comment='The lowest altitude of the overview (in metres)'),
                          Column('altitude_max_m', Integer),
                          )
 
-    expected: Model = Model('resort', {
-        'id': fields.Integer(description='The identifier of the resort'),
-        'continent': fields.String(description='The continent where the resort is located'),
-        'lat': fields.Float(description='The latitudinal coordinate of the geolocation of the resort'),
-        'altitude_min_m': fields.Integer(description='The lowest altitude of the resort (in metres)'),
+    expected: Model = Model('overview', {
+        'id': fields.Integer(description='The identifier of the overview'),
+        'continent': fields.String(description='The continent where the overview is located'),
+        'lat': fields.Float(description='The latitudinal coordinate of the geolocation of the overview'),
+        'altitude_min_m': fields.Integer(description='The lowest altitude of the overview (in metres)'),
         'altitude_max_m': fields.Integer(description=None),
     })
 
     result: Model = convert_sqlalchemy_to_restplus_model(table)
+
+    assert isinstance(result, type(expected))
+    assert result.name == expected.name
+    assert len(result.items()) == len(expected.items())
+    for key in expected.keys():
+        assert key in result.keys()
+        assert isinstance(result[key], type(expected[key]))
+        assert expected[key].description == result[key].description
+
+
+def test_filter_restplus_columns():
+    model: Model = Model('overview', {
+        'id': fields.Integer(description='The identifier of the overview'),
+        'continent': fields.String(description='The continent where the overview is located'),
+        'lat': fields.Float(description='The latitudinal coordinate of the geolocation of the overview'),
+        'altitude_min_m': fields.Integer(description='The lowest altitude of the overview (in metres)'),
+        'altitude_max_m': fields.Integer(description=None),
+    })
+
+    mask = ['continent', 'lat']
+
+    expected: Model = Model('overview', {
+        'continent': fields.String(description='The continent where the overview is located'),
+        'lat': fields.Float(description='The latitudinal coordinate of the geolocation of the overview'),
+    })
+
+    result: Model = filter_restplus_columns(model, mask)
 
     assert isinstance(result, type(expected))
     assert result.name == expected.name

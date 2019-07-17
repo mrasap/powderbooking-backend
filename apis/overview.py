@@ -25,40 +25,29 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-from flask_restplus import Namespace, Resource
-from powderbooking.models import model_weather
-from sqlalchemy import MetaData
+from flask_restplus import Namespace, Resource, Model
 
+from utils.convert_models import filter_restplus_columns
 from database import db
 from database.query import Query
 
-from utils.convert_models import convert_sqlalchemy_to_restplus_model
+from apis.forecast import forecast
+from apis.resort import resort
 
-api = Namespace('weather', description='Weather reports of a overview')
+api = Namespace('overview', description='Overview of all resorts with aggregate forecast data')
 
-weather = convert_sqlalchemy_to_restplus_model(table=model_weather(metadata=MetaData()))
-api.add_model(name=weather.name, definition=weather)
+filtered_resort = filter_restplus_columns(model=resort, mask=['id', 'lat', 'lng'])
+# TODO: Create an overview table in the database with rain_total_mm and snow_total_mm
+filtered_forecast = filter_restplus_columns(model=forecast, mask=['rain_total_mm', 'snow_total_mm'])
+
+overview = Model('overview', {**filtered_resort, **filtered_forecast})  # pythonic way to union two dicts
+api.add_model(name=overview.name, definition=overview)
 
 
 @api.route('/')
-class WeatherList(Resource):
-    @api.doc('list_resorts')
-    @api.marshal_list_with(weather)
+class OverviewList(Resource):
+    @api.doc('list_overview')
+    @api.marshal_list_with(overview)
     def get(self):
-        """List all weather reports"""
-        return db.execute(db.get_table('weather').select()).fetchall()
-
-
-@api.route('/<int:resort_id>')
-@api.param('resort_id', 'The overview identifier')
-@api.response(404, 'No weather report for given overview identifier found')
-class Weather(Resource):
-    @api.doc('get_weather_report')
-    @api.marshal_with(weather)
-    def get(self, resort_id: int):
-        """Get the latest weather report for the given overview identifier"""
-        result = db.execute_query(Query.select_weather_recent, resort_id=resort_id)
-
-        if result.rowcount == 1:
-            return result.fetchone()
-        api.abort(404)
+        """List all resorts with aggregate forecast data of today"""
+        return db.execute_query(Query.select_overview).fetchall()

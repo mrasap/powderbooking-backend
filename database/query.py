@@ -33,3 +33,27 @@ class Query(Enum):
         ORDER BY dt DESC
         LIMIT 1
     """)
+
+    select_forecast_current = text("""
+        SELECT *
+        FROM forecast
+        WHERE resort_id = :resort_id
+            AND NOW() - date_request < INTERVAL '1 day'
+        ORDER BY timepoint ASC;
+    """)
+
+    select_forecast_past = text("""
+        SELECT *
+        FROM forecast
+        WHERE resort_id = :resort_id
+            AND date = current_date
+        ORDER BY timepoint ASC;
+    """)
+
+    select_overview = text("""
+        SELECT r.id, r.lat, r.lng, f.rain_total_mm, f.snow_total_mm
+        FROM resort as r
+        JOIN forecast as f on r.id = f.resort_id
+        WHERE current_date = f.date
+            AND timepoint = 0;
+    """)
