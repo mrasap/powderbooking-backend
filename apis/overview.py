@@ -31,7 +31,7 @@ overview = Model('overview', {**filtered_resort, **filtered_forecast})  # python
 api.add_model(name=overview.name, definition=overview)
 
 max_overview = Model('max_overview', {
-    'max': fields.Float(description='The maximum amount of snow forecast of today', required=True)
+    'max': fields.Float(description='The maximum amount of snow or rain forecast of today', required=True)
 })
 api.add_model(name=max_overview.name, definition=max_overview)
 
