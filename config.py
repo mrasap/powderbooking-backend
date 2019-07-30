@@ -15,7 +15,7 @@
 import os
 
 
-def build_database_url() -> str:
+def build_database_url(project: str = os.environ.get('PROJECT_NAME', 'powderbooking')) -> str:
     """
     Build the database url.
     Credentials are built from environmental variables.
@@ -24,7 +24,7 @@ def build_database_url() -> str:
     """
     username = os.environ.get('POSTGRESQL_USERNAME', 'postgres')
     password = os.environ.get('POSTGRESQL_PASSWORD', 'password')
-    host = os.environ.get('POSTGRESQL_HOST', 'localhost')
-    port = os.environ.get('POSTGRESQL_PORT', '8001')
+    host = os.environ.get(f'{project}_POSTGRESQL_SERVICE_HOST'.upper(), 'localhost')
+    port = os.environ.get(f'{project}_POSTGRESQL_SERVICE_PORT'.upper(), '8001')
     database = os.environ.get('POSTGRESQL_DB', 'powderbooking')
     return f'postgresql://{username}:{password}@{host}:{port}/{database}'
