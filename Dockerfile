@@ -4,7 +4,8 @@ FROM python:3.7.3-alpine3.9
 COPY requirements.txt requirements.txt
 
 # psycopg2 source: https://hub.docker.com/r/svlentink/psycopg2/dockerfile
-RUN apk add --virtual .build-deps --no-cache postgresql-dev gcc g++ && \
+# uWSGI source: https://hub.docker.com/r/infrastructureascode/uwsgi/dockerfile
+RUN apk add --virtual .build-deps --no-cache linux-headers build-base postgresql-dev && \
     # install the dependencies required during runtime
     apk add --no-cache libpq && \
     # install the actual python packages
@@ -25,4 +26,6 @@ RUN adduser -D dummyuser && \
 WORKDIR app
 USER dummyuser
 
-CMD ["python3", "app.py"]
+EXPOSE 8080
+
+CMD ["/usr/local/bin/uwsgi", "--ini", "uwsgi.ini"]

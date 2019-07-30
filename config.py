@@ -22,7 +22,7 @@ def build_database_url(project: str = os.environ.get('PROJECT_NAME', 'powderbook
 
     :return: the database url
     """
-    username = os.environ.get('POSTGRESQL_USERNAME', 'postgres')
+    username = os.environ.get('POSTGRESQL_USER', 'postgres')
     password = os.environ.get('POSTGRESQL_PASSWORD', 'password')
     host = os.environ.get(f'{project}_POSTGRESQL_SERVICE_HOST'.upper(), 'localhost')
     port = os.environ.get(f'{project}_POSTGRESQL_SERVICE_PORT'.upper(), '8001')
