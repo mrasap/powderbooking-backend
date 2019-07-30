@@ -22,9 +22,9 @@ def build_database_url() -> str:
 
     :return: the database url
     """
-    username = os.environ.get('POSTGRES_USERNAME', 'postgres')
-    password = os.environ.get('POSTGRES_PASSWORD', 'password')
-    host = os.environ.get('POSTGRES_HOST', 'localhost')
-    port = os.environ.get('POSTGRES_PORT', '8001')
-    database = os.environ.get('POSTGRES_DB', 'powderbooking')
+    username = os.environ.get('POSTGRESQL_USERNAME', 'postgres')
+    password = os.environ.get('POSTGRESQL_PASSWORD', 'password')
+    host = os.environ.get('POSTGRESQL_HOST', 'localhost')
+    port = os.environ.get('POSTGRESQL_PORT', '8001')
+    database = os.environ.get('POSTGRESQL_DB', 'powderbooking')
     return f'postgresql://{username}:{password}@{host}:{port}/{database}'
