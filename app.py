@@ -19,10 +19,9 @@ app = Flask(__name__)
 api.init_app(app)
 
 
-# For testing purposes: https://stackoverflow.com/a/53729733
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Origin', 'https://powderbooking.com')
     return response
 
 
