@@ -13,21 +13,22 @@
 #  limitations under the License.
 #
 from flask_restplus import Namespace, Resource, Model, fields
+from powderbooking.models import model_forecast_week
+from sqlalchemy import MetaData
 
-from utils.convert_models import filter_restplus_columns
+from utils.convert_models import filter_restplus_columns, convert_sqlalchemy_to_restplus_model
 from database import db
 from database.query import Query
 
-from apis.forecast import forecast
 from apis.resort import resort
 
 api = Namespace('overview', description='Overview of all resorts with aggregate forecast data')
 
 filtered_resort = filter_restplus_columns(model=resort, mask=['id', 'lat', 'lng', 'village'])
-# TODO: Create an overview table in the database with rain_total_mm and snow_total_mm
-filtered_forecast = filter_restplus_columns(model=forecast, mask=['rain_total_mm', 'snow_total_mm'])
+forecast_week = convert_sqlalchemy_to_restplus_model(table=model_forecast_week(metadata=MetaData()))
+filtered_forecast_week = filter_restplus_columns(model=forecast_week, mask=['rain_week_mm', 'snow_week_mm'])
 
-overview = Model('overview', {**filtered_resort, **filtered_forecast})  # pythonic way to union two dicts
+overview = Model('overview', {**filtered_resort, **filtered_forecast_week})  # pythonic way to union two dicts
 api.add_model(name=overview.name, definition=overview)
 
 max_overview = Model('max_overview', {

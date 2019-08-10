@@ -7,7 +7,7 @@ itsdangerous==1.1.0
 Jinja2==2.10.1
 jsonschema==3.0.1
 MarkupSafe==1.1.1
-powderbooking==0.3.1
+powderbooking==0.4.2
 psycopg2-binary==2.8.2
 pyrsistent==0.15.3
 pytz==2019.1

@@ -51,25 +51,22 @@ class Query(Enum):
     """)
 
     select_overview = text("""
-        SELECT r.id, r.village, r.lat, r.lng, f.rain_total_mm, f.snow_total_mm
+        SELECT r.id, r.village, r.lat, r.lng, f.rain_week_mm, f.snow_week_mm
         FROM resort as r
-        JOIN forecast as f on r.id = f.resort_id
-        WHERE current_date = f.date
-            AND timepoint = 0;
+        JOIN forecast_week as f on r.id = f.resort_id
+        WHERE current_date = f.date_request::date;
     """)
 
     select_max_overview_snow = text("""
-        SELECT max(f.snow_total_mm)
+        SELECT max(f.snow_week_mm)
         FROM resort as r
-        JOIN forecast as f on r.id = f.resort_id
-        WHERE current_date = f.date
-            AND timepoint = 0;
+        JOIN forecast_week as f on r.id = f.resort_id
+        WHERE current_date = f.date_request::date;
     """)
 
     select_max_overview_rain = text("""
-        SELECT max(f.rain_total_mm)
+        SELECT max(f.rain_week_mm)
         FROM resort as r
-        JOIN forecast as f on r.id = f.resort_id
-        WHERE current_date = f.date
-            AND timepoint = 0;
+        JOIN forecast_week as f on r.id = f.resort_id
+        WHERE current_date = f.date_request::date;
     """)
